@@ -11,7 +11,7 @@ such as partial-word features (which would not be available in a realistic ASR a
 
 
 <p align="center">
-  <img src="img/acnn_model.jpg" width=777 height=600>
+  <img src="img/acnn_model.jpg" width=777 height=680>
 </p>
 
 
