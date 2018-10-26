@@ -3,7 +3,7 @@ This is the implementation of Auto-Correlational Neural Networks (ACNN) proposed
 reparandum "to Boston" is the part of the utterance that is replaced, the interregnum "uh I mean" is an optional part of a disfluent structure, and the repair "to Denver" replaces the reparandum. The fluent version is obtained by removing reparandum and interregnum words although disfluency detection models mainly deal with identifying and removing reparanda. The repair (e.g. "to Denver") frequently seems to be a "rough copy" of the reparandum (e.g., to Boston) -- i.e. they incorporate the same or very similar words in roughly the same word order. This similarity is strong evidence of a disfluency that can help the model detect reparanda. 
 
 <p align="center">
-  <img src="img/disfluency_example.jpg" width=476 height=150>
+  <img src="img/disfluency_example.jpg" width=476 height=50>
 </p>
 
 The previous deep neural models heavily depended on hand-crafted pattern-match features to capture these "rough copies" while the ACNN model is able to learn them without requiring any manual feature engineering. The ACNN model only uses whole-word inputs; however, it is competitive with lots of complex models in the literature which rely on hand-crafted features, additional information sources
