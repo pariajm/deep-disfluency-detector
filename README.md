@@ -6,7 +6,7 @@ The previous deep neural models heavily depended on hand-crafted pattern-match f
 such as partial-word features (which would not be available in a realistic ASR application), or external resources such as dependency parsers and language models. 
 
 <p align="center">
-  <img src="img/disfluency_example.jpg" width=676 height=450>
+  <img src="img/disfluency_example.jpg" width=176 height=150>
 </p>
 
 # Requirements
@@ -20,7 +20,7 @@ We split the Switchboard corpus into training, dev and test set as follows: trai
 
 # Training
 
-./train.py --data_path=path/to/train_and_test_files --checkpoint_dir=dir/to/save/checkpoints_and_summaries
+./train.py    --data_path=path/to/train_and_test_files     --checkpoint_dir=dir/to/save/checkpoints_and_summaries
 
 
 # Citation
@@ -38,4 +38,4 @@ We split the Switchboard corpus into training, dev and test set as follows: trai
 ```
 
 
-The baseline CNN code is a revised version of <a href='https://github.com/dennybritz/cnn-text-classification-tf'>Denny's code</a><br>. 
+The baseline CNN code is a revised version of <a href='https://github.com/dennybritz/cnn-text-classification-tf'>Denny's code.</a><br>
