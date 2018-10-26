@@ -10,7 +10,7 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
 </p>
 
 # ACNN Model
-CNNs and RNNs are surprisingly poor at capturing the "rough copy" dependencies, so their performance heavily depend on hand-crafted pattern-match features. Auto-Correlational Neural Network (ACNN) is a novel neural network that generalises CNN and is able to learn the "rough copies" without requiring any manual feature engineering. The ACNN model only uses whole-word inputs; however, it is competitive with lots of complex models in the literature which rely on hand-crafted features, additional information sources such as partial-word features (which would not be available in a realistic ASR application), or external resources such as dependency parsers and language models. 
+CNNs and RNNs are surprisingly poor at capturing the "rough copy" dependencies; as a result, their performance heavily depends on hand-crafted pattern-match features. Auto-Correlational Neural Network (ACNN) is a novel neural network that generalises CNN and is able to learn the "rough copies" without requiring any manual feature engineering. The ACNN model only uses whole-word inputs; however, it is competitive with lots of complex models in the literature which rely on hand-crafted features, additional information sources such as partial-word features (which would not be available in a realistic ASR application), or external resources such as dependency parsers and language models. 
 
 <p align="center">
   <img src="img/acnn_model.jpg" width=777 height=680>
