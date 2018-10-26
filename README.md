@@ -6,7 +6,7 @@ The previous deep neural models heavily depended on hand-crafted pattern-match f
 such as partial-word features (which would not be available in a realistic ASR application), or external resources such as dependency parsers and language models. 
 
 <p align="center">
-  <img src="img/disfluency_example.jpg" width=176 height=150>
+  <img src="img/disfluency_example.jpg" width=476 height=150>
 </p>
 
 # Requirements
