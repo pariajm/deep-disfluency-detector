@@ -71,8 +71,7 @@ def swi_data(data_path=None):
     dev_output_data = _read_data(os.path.join(data_path, "swi.dev.label.txt"))
     test_output_data = _read_data(os.path.join(data_path, "swi.test.label.txt"))
 
-    # label_vocab = {'_': 0, 'E': 1}
-    label_vocab = {'F': 0, 'E': 1}
+    label_vocab = {'_': 0, 'E': 1}
     output_vocab_processor = learn.preprocessing.VocabularyProcessor(max_length, vocabulary=label_vocab)
     train_output_ids = np.array(list(output_vocab_processor.transform(train_output_data)))
     dev_output_ids = np.array(list(output_vocab_processor.transform(dev_output_data)))
