@@ -13,8 +13,8 @@ tf.flags.DEFINE_string("data_path", '', "Data source for the input and output fi
 tf.flags.DEFINE_string("checkpoint_dir", '', "Directory to save the checkpoints and training summaries")
 
 # model hyper-parameters
-tf.flags.DEFINE_integer("embed_dim", 270, "Dimensionality of word embedding")
-tf.flags.DEFINE_integer("num_filters", 90, "Number of filters per filter size")
+tf.flags.DEFINE_integer("embed_dim", 290, "Dimensionality of word embedding")
+tf.flags.DEFINE_integer("num_filters", 120, "Number of filters per filter size")
 tf.flags.DEFINE_string("conv1_filter_sizes", "12,7", "Comma-separated conv1 filter sizes")
 tf.flags.DEFINE_string("conv2_filter_sizes", "10,6", "Comma-separated conv2 filter sizes")
 tf.flags.DEFINE_string("conv3_filter_sizes", "8,5", "Comma-separated conv3 filter sizes")
@@ -26,8 +26,7 @@ tf.flags.DEFINE_float("weight_initial", 0.09, "The standard deviation of weight 
 tf.flags.DEFINE_integer("batch_size", 25, "Training batch size")
 tf.flags.DEFINE_integer("num_epochs", 25, "Number of training epochs")
 tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store")
-tf.flags.DEFINE_integer("dev_batch_size", 143, "Dev batch size") #if you use 3D kernels in ACNN, you probably don't need dev batchinng -->
-                                                                 # So, set this parameter to whole length of the dev set.
+tf.flags.DEFINE_integer("dev_batch_size", 143, "Dev batch size")
 
 # other parameters
 tf.flags.DEFINE_string("device_name", '/cpu:0', "Device name to be used in ACNN layer")
