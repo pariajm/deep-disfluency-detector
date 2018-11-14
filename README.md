@@ -46,4 +46,4 @@ We split the Switchboard corpus into training, dev and test set as follows: trai
 ```
 
 
-The baseline CNN code is a revised version of <a href='https://github.com/dennybritz/cnn-text-classification-tf'>Denny's code.</a><br>
+The baseline CNN code is a modified version of <a href='https://github.com/dennybritz/cnn-text-classification-tf'>Denny's code.</a><br>
