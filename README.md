@@ -1,4 +1,4 @@
-# <a href='https://arxiv.org/pdf/1808.09092.pdf'>Disfluency Detection using Auto-Correlational Neural Networks (ACNN)</a><br>
+# <a href='https://www.aclweb.org/anthology/D18-1490'>Disfluency Detection using Auto-Correlational Neural Networks (ACNN)</a><br>
 This is the implementation of Auto-Correlational Neural Networks (ACNN) proposed for disfluency detection from speech transcripts. 
 
 # Task
