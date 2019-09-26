@@ -45,5 +45,5 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
 }
 ```
 
-
+# Credits
 The baseline CNN code is a modified version of <a href='https://github.com/dennybritz/cnn-text-classification-tf'>Denny's code.</a><br>
