@@ -27,9 +27,9 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
 
 
 # Training
-
+```
 ./train.py    --data_path=path/to/train_and_test_files     --checkpoint_dir=dir/to/save/checkpoints_and_summaries
-
+```
 
 # Citation
 ```
