@@ -62,9 +62,9 @@ class ACNN(object):
                                                      rates=[1, 1, 1, 1],
                                                      padding="SAME",
                                                      name="patches")
-                reshaped_pathes = tf.reshape(patches, [-1, conv1_filter_sizes[i], embedding_size])
-                # function_f = tf.einsum('ijl,ikl->ikjl', reshaped_pathes, reshaped_pathes) # function to be used for 4D kernels
-                function_f = tf.einsum('ijl,ikl->ijk', reshaped_pathes, reshaped_pathes) # function to be used for 3D kernels
+                reshaped_patches = tf.reshape(patches, [-1, conv1_filter_sizes[i], embedding_size])
+                # function_f = tf.einsum('ijl,ikl->ikjl', reshaped_patches, reshaped_patches) # function to be used for 4D kernels
+                function_f = tf.einsum('ijl,ikl->ijk', reshaped_patches, reshaped_patches) # function to be used for 3D kernels
                 reshaped_function_f = tf.reshape(function_f, [self.batch_size * max_length, -1])
                 auto_correlated_input = tf.reshape(tf.matmul(reshaped_function_f, flat_kernel_B, name='auto_cor'),
                                                    (self.batch_size, max_length, 1, -1))
