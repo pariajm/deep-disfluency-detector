@@ -45,7 +45,7 @@ class ACNN(object):
             2. A vanilla CNN layer which convolves the input tensor with kernels A of different sizes.
 
             Each kernel group A and B outputs a tensor of the same size which are added element-wise to produce the feature
-            representation that is passed to further convolutional layers. For more details, read https://arxiv.org/pdf/1808.09092.pdf.
+            representation that is passed to further convolutional layers. For more details, read https://www.aclweb.org/anthology/D18-1490.pdf.
         """
 
         combine_acnn_features = []
