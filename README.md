@@ -38,10 +38,10 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
   title = 	{Disfluency Detection using Auto-Correlational Neural Networks},
   booktitle = 	{Proceedings of the Conference on Empirical Methods in Natural Language Processing (EMNLP2018)},
   year = 	{2018},
-  pages = 	{1--10},
+  pages = 	{4610--4619},
   address = 	{Brussels, Belgium},
   publisher =   {Association for Computational Linguistics},
-  url       =   {https://arxiv.org/pdf/1808.09092.pdf}
+  url       =   {https://www.aclweb.org/anthology/D18-1490.pdf}
 }
 ```
 
