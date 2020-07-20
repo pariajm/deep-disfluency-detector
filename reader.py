@@ -1,63 +1,76 @@
-"""Utilities for reading Switchboard files."""
+"""
+
+Utilities for reading Switchboard files
+
+"""
+
 import numpy as np
 from tensorflow.contrib import learn
 import os
 
 
 def _read_data(filename):
-    with open(filename, 'r') as fp:
-        lines = fp.read().split('\n')
+    with open(filename) as fp:
+        lines = fp.readlines()
         return lines
 
 
 def _length(sentences):
-    sent_length = [len(sen.split()) for sen in sentences]
-    return sent_length
+    sn_length = [len(sn.split()) for sn in sentences]
+    return sn_length
 
 
 def _mask(sentences, max_length):
     """
-    Build a mask array to ignore padded integers for calculating precision, recall and fscore.
+    - Builds a mask array to ignore padded integers for calculating precision, recall and fscore
 
     Args:
-         sentences: a list of input sentences.
-         max_length: maximum length used for padding sentences.
+         sentences: a list of input sentences
+         max_length: maximum length used for padding sentences
 
     Returns:
-        mask_array
-        an array of actual length of sentences.
+        mask_array: an array of actual length of sentences
 
     """
-    sent_length = _length(sentences)
-    mask_array = np.zeros((len(sent_length)*max_length, 1), dtype=np.float64)
+    sn_length = _length(sentences)
+    mask_array = np.zeros((len(sn_length) * max_length, 1), dtype=np.float64)
     row_num = 0
-    for length in sent_length:
+    for length in sn_length:
         mask_array[row_num:length+row_num] = 1
         row_num += length + (max_length - length)
     return mask_array
 
 
-def swi_data(data_path=None):
+def swbd_data(data_path=None):
     """
-    Load Switchboard input and output files from data directory "data_path".
+    - Loads Switchboard input and output files from data dir "./data_path",
 
-    Read Switchboard files, convert strings to integer ids.
+    - Then, reads Switchboard files and converts strings to integer ids,
 
-    Create mask arrays for input files.
+    - Finally, creates mask arrays for input files.
 
     Args:
-        data_path: string path to the directory where train, dev and test input and output files are stored.
+        data_path: string path to the dir where train, dev and test input and output files are stored
+        (check out ./sample_data for the input format)
 
     Returns:
-        tuple (train_input_ids, dev_input_ids, test_input_ids,
-               train_output_ids, dev_output_ids, test_output_ids,
-               train_mask, dev_mask, test_mask,
-               max_length, input_vocab_processor)
-        where each of the data objects can be passed to swi_minibathes.
+        tuple (
+               train_input_ids, 
+               dev_input_ids, 
+               test_input_ids,
+               train_output_ids, 
+               dev_output_ids, 
+               test_output_ids,
+               train_mask, 
+               dev_mask, 
+               test_mask,
+               max_length, 
+               input_vocab_processor
+        ): where each of the data objects can be passed to swbd_minibathes
     """
-    train_input_data = _read_data(os.path.join(data_path, "swi.train.txt"))
-    dev_input_data = _read_data(os.path.join(data_path, "swi.dev.txt"))
-    test_input_data = _read_data(os.path.join(data_path, "swi.test.txt"))
+    train_input_data = _read_data(os.path.join(data_path, "swbd.train.txt"))
+    dev_input_data = _read_data(os.path.join(data_path, "swbd.dev.txt"))
+    test_input_data = _read_data(os.path.join(data_path, "swbd.test.txt"))
 
     max_length = max(_length(train_input_data))
 
@@ -66,12 +79,11 @@ def swi_data(data_path=None):
     dev_input_ids = np.array(list(input_vocab_processor.transform(dev_input_data)))
     test_input_ids = np.array(list(input_vocab_processor.transform(test_input_data)))
 
+    train_output_data = _read_data(os.path.join(data_path, "swbd.train.label.txt"))
+    dev_output_data = _read_data(os.path.join(data_path, "swbd.dev.label.txt"))
+    test_output_data = _read_data(os.path.join(data_path, "swbd.test.label.txt"))
 
-    train_output_data = _read_data(os.path.join(data_path, "swi.train.label.txt"))
-    dev_output_data = _read_data(os.path.join(data_path, "swi.dev.label.txt"))
-    test_output_data = _read_data(os.path.join(data_path, "swi.test.label.txt"))
-
-    label_vocab = {'_': 0, 'E': 1}
+    label_vocab = {'F': 0, 'E': 1}
     output_vocab_processor = learn.preprocessing.VocabularyProcessor(max_length, vocabulary=label_vocab)
     train_output_ids = np.array(list(output_vocab_processor.transform(train_output_data)))
     dev_output_ids = np.array(list(output_vocab_processor.transform(dev_output_data)))
@@ -81,28 +93,34 @@ def swi_data(data_path=None):
     dev_mask = _mask(dev_input_data, max_length)
     test_mask = _mask(test_input_data, max_length)
 
-    return train_input_ids, dev_input_ids, test_input_ids, \
-           train_output_ids, dev_output_ids, test_output_ids, \
-           train_mask, dev_mask, test_mask, \
-           max_length, input_vocab_processor
+    return train_input_ids, \
+        dev_input_ids, \
+        test_input_ids, \
+        train_output_ids, \
+        dev_output_ids, \
+        test_output_ids, \
+        train_mask, \
+        dev_mask, \
+        test_mask, \
+        max_length, \
+        input_vocab_processor
 
 
-def swi_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, max_length, shuffle=True):
+def swbd_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, max_length, shuffle=True):
     """
-    Iterate on the Switchboard input and output files.
+    - Iterates on the Switchboard input and output files
 
     Args:
-        input_ids: one of the input id files from swi_data.
-        output_ids: one of the output id files from swi_data.
-        mask_data: one of the mask files from swi_data.
-        batch_size: int, the batch size.
-        num_epochs: int, the number of training epochs.
-        max_length: int, the maximum length used for padding.
-        shuffle: Boolean, whether to shuffle training data or not.
+        input_ids: one of the input id files from swbd_data
+        output_ids: one of the output id files from swbd_data
+        mask_data: one of the mask files from swbd_data
+        batch_size: int, the batch size
+        num_epochs: int, the number of training epochs
+        max_length: int, the maximum length used for padding
+        shuffle: Boolean, whether to shuffle training data or not
 
     Returns:
-        tuple (x, y, z)
-        which are minibathes of (input, output, mask)
+        tuple (x, y, z): which are minibathes of (input, output, mask)
     """
 
     output_ids = np.reshape(np.array(output_ids), (-1, max_length))
@@ -118,9 +136,9 @@ def swi_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, ma
     output_ids = np.array([np.concatenate(output_ids, 0)]).T
     mask_data = mask_data.reshape(-1, 1)
 
-    data_size = len(input_ids)/max_length
-    num_batches_per_epoch = data_size / batch_size
-
+    data_size = len(input_ids) // max_length
+    num_batches_per_epoch = data_size // batch_size
+    print(data_size, batch_size)
     for epoch in range(num_epochs):
         for batch_num in range(num_batches_per_epoch):
             start_index = (batch_num * batch_size) * max_length
@@ -128,7 +146,4 @@ def swi_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, ma
             x = np.reshape(input_ids[start_index:end_index], (batch_size, max_length))
             y = output_ids[start_index:end_index]
             z = mask_data[start_index:end_index]
-
             yield (x, y, z)
-
-
