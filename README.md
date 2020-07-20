@@ -18,8 +18,8 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
 
 
 # Requirements
-- Python 
-- Tensorflow 
+- Python 3 
+- Tensorflow > 0.12
 - Numpy
 
 # Data
@@ -28,7 +28,9 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
 
 # Training
 ```
-./train.py    --data_path=path/to/train_and_test_files     --checkpoint_dir=dir/to/save/checkpoints_and_summaries
+$ git clone https://github.com/pariajm/deep-disfluency-detection
+$ cd deep-disfluency-detection
+$ python3 train.py --data_path=path/to/train_and_test_files --checkpoint_dir=dir/to/save/checkpoints_and_summaries
 ```
 
 # Citation
