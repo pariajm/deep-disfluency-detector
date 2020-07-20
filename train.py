@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from __future__ import division
 import tensorflow as tf
 import numpy as np
@@ -7,10 +9,9 @@ import datetime
 import reader
 from acnn import ACNN
 
-
-# paths to input, output and result files
+# path to input, output and result files
 tf.flags.DEFINE_string("data_path", '', "Data source for the input and output files.")
-tf.flags.DEFINE_string("checkpoint_dir", '', "Directory to save the checkpoints and training summaries")
+tf.flags.DEFINE_string("checkpoint_dir", '', "Dir to saving checkpoints and training summaries")
 
 # model hyper-parameters
 tf.flags.DEFINE_integer("embed_dim", 290, "Dimensionality of word embedding")
@@ -35,21 +36,21 @@ tf.flags.DEFINE_boolean("log_device_placement", False, "Log placement of ops on 
 
 
 FLAGS = tf.flags.FLAGS
-FLAGS._parse_flags()
-print("\nParameters:")
-for attr, value in sorted(FLAGS.__flags.items()):
-    print("{}={}".format(attr.upper(), value))
-print("")
+# FLAGS._parse_flags()
+# print("\nParameters:")
+# for attr, value in sorted(FLAGS.__flags.items()):
+#     print("{}={}".format(attr.upper(), value))
+# print("")
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #                        Data Preparation
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Loading training, dev and test data
+# Loading training, dev and test data:
 print("Loading data...")
+x_train, x_dev, x_test, y_train, y_dev, y_test, z_train, z_dev, z_test, max_length, vocab = reader.swbd_data(
+                                                                                            FLAGS.data_path)
 
-x_train, x_dev, x_test, y_train, y_dev, y_test, z_train, z_dev, z_test, max_length, vocab = reader.swi_data(FLAGS.data_path)
-
-# evaluate model on dev data and save the model at the end of each epoch
+# Evaluate model on dev data and save the model at the end of each epoch:
 evaluate_every = (len(x_train) - 1) // FLAGS.batch_size
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -83,7 +84,7 @@ with graph.as_default():
         grads_and_vars = optimizer.compute_gradients(cnn.loss)
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
-        # Keep track of gradient values and sparsity (optional)
+        # Keep track of gradient values and sparsity (optional):
         grad_summaries = []
         for g, v in grads_and_vars:
             if g is not None:
@@ -93,20 +94,20 @@ with graph.as_default():
                 grad_summaries.append(sparsity_summary)
         grad_summaries_merged = tf.summary.merge(grad_summaries)
 
-        # Output directory for models and summaries
+        # Output dir for models and summaries:
         timestamp = str(int(time.time()))
         out_dir = os.path.abspath(os.path.join(FLAGS.checkpoint_dir, "runs", timestamp))
         print("Writing to {}\n".format(out_dir))
 
-        # Summaries for loss
+        # Summaries for loss:
         loss_summary = tf.summary.scalar("loss", cnn.loss)
 
-        # Train Summaries
+        # Train Summaries:
         train_summary_op = tf.summary.merge([loss_summary, grad_summaries_merged])
         train_summary_dir = os.path.join(out_dir, "summaries", "train")
         train_summary_writer = tf.summary.FileWriter(train_summary_dir, sess.graph)
 
-        # Dev summaries
+        # Dev summaries:
         dev_summary_op = tf.summary.merge([loss_summary])
         dev_summary_dir = os.path.join(out_dir, "summaries", "dev")
         dev_summary_writer = tf.summary.FileWriter(dev_summary_dir, sess.graph)
@@ -117,16 +118,15 @@ with graph.as_default():
             os.makedirs(checkpoint_dir)
         saver = tf.train.Saver(tf.global_variables(), max_to_keep=FLAGS.num_checkpoints)
 
-        # Write vocabulary
+        # Write vocabulary:
         vocab.save(os.path.join(out_dir, "vocab"))
 
-        # Initialize all variables
+        # Initialize all variables:
         sess.run(tf.global_variables_initializer())
 
-        # ------------------------------------------------------------------------------
-        print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-        print "                         EPOCH %s" % 1
-        print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+        print ("+"*50)
+        print ("EPOCH 1")          
+        print ("+"*50)
         cost = [] # saving loss of each training step
         e = [] # saving num of edited predictions in training set
         c = [] # saving num of correct edited predictions in training set
@@ -157,7 +157,6 @@ with graph.as_default():
             c.append(ncorrect)
             g.append(ntarget)
 
-        # ------------------------------------------------------------------------------
         cost_dev = [] # saving loss of each dev step
         e_dev = [] # saving num of edited predictions in dev set
         c_dev = [] # saving num of correct edited predictions in dev set
@@ -186,7 +185,6 @@ with graph.as_default():
             if writer:
                 writer.add_summary(summaries, step)
 
-        # ------------------------------------------------------------------------------
         cost_test = [] # saving loss of each test step
         e_test = [] # saving num of edited predictions in test set
         c_test = [] # saving num of correct edited predictions in test set
@@ -207,17 +205,18 @@ with graph.as_default():
             loss, test_nprediction, test_ncorrect, test_ntarget = sess.run(
                 [cnn.loss, cnn.nprediction, cnn.ncorrect, cnn.ntarget],
                 feed_dict)
+
             cost_test.append(loss)
             e_test.append(test_nprediction)
             c_test.append(test_ncorrect)
             g_test.append(test_ntarget)
 
-        #------------------------------------------------------------------------------
-        # Generate batches
-        batches = reader.swi_minibatches(
-            x_train, y_train, z_train, FLAGS.batch_size, FLAGS.num_epochs, max_length, shuffle=True)
+        # Generate batches:
+        batches = reader.swbd_minibatches(
+            x_train, y_train, z_train, FLAGS.batch_size, FLAGS.num_epochs, max_length, shuffle=True
+            )
 
-        # Training loop. For each batch...
+        # Training loop:
         epoch_counter = 1
         for batch in batches:
             x_batch = batch[0]
@@ -227,19 +226,22 @@ with graph.as_default():
             train_step(x_batch, y_batch, z_batch)
             current_step = tf.train.global_step(sess, global_step)
             if current_step % evaluate_every == 0:
-                print ">>> EPOCH %s: Train Loss %f, Precision %f, Recall %f, F-score %f" % \
-                      (epoch_counter, np.mean(cost), sum(c) / (sum(e) + (1e-100)),
-                       sum(c) / (sum(g) + (1e-100)), (2 * sum(c)) / (sum(g) + sum(e) + 1e-100))
-                print len(cost), 'len'
+                print ("EPOCH {}: train loss {:.3}, precision {:.3}, recall {:.3}, fscore {:.3}".format(
+                      epoch_counter, np.mean(cost), sum(c) / (sum(e) + (1e-100)), \
+                      sum(c) / (sum(g) + (1e-100)), (2 * sum(c)) / (sum(g) + sum(e) + 1e-100)
+                ))
+                print ("len {}".format(len(cost)))
                 cost = []
                 e = []
                 c = []
                 g = []
-                # ------------------------------------------------------------------------------
+
                 # Evaluating the model on the dev set at the end of each training epoch:
                 print("\nEvaluation:")
-                dev_batches = reader.swi_minibatches(
-                    x_dev, y_dev, z_dev, FLAGS.dev_batch_size, num_epochs=1, max_length=max_length, shuffle=False)
+                dev_batches = reader.swbd_minibatches(
+                    x_dev, y_dev, z_dev, FLAGS.dev_batch_size, \
+                    num_epochs=1, max_length=max_length, shuffle=False
+                    )
 
                 for batch_num in dev_batches:
                     x_dev_batch = batch_num[0]
@@ -248,10 +250,10 @@ with graph.as_default():
 
                     dev_step(x_dev_batch, y_dev_batch, z_dev_batch, writer=dev_summary_writer)
 
-                print "\n >>> EPOCH %s: Evaluation Loss %f,  Precision %f, Recall %f, F-score %f" %\
-                      (epoch_counter, np.mean(cost_dev),
-                       sum(c_dev) / (sum(e_dev) + 1e-100), sum(c_dev) / (sum(g_dev) + 1e-100),
-                       (2 * sum(c_dev)) / (sum(g_dev) + sum(e_dev) + 1e-100))
+                print ("\nEPOCH {}: eval loss {:.3}, precision {:.3}, recall {:.3}, fscore {:.3}".format(
+                      epoch_counter, np.mean(cost_dev), sum(c_dev) / (sum(e_dev) + (1e-100)), \
+                      sum(c_dev) / (sum(g_dev) + (1e-100)), (2 * sum(c_dev)) / (sum(g_dev) + sum(e_dev) + 1e-100)
+                ))
 
                 cost_dev = []
                 e_dev = []
@@ -259,10 +261,9 @@ with graph.as_default():
                 g_dev = []
                 epoch_counter += 1
 
-                print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-                print "                         EPOCH %s" % (epoch_counter)
-                print "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-
+                print ("+"*50)
+                print ("EPOCH {}".format(epoch_counter))          
+                print ("+"*50)
 
             if current_step % evaluate_every == 0:
                 path = saver.save(sess, checkpoint_prefix, global_step=current_step)
@@ -271,7 +272,9 @@ with graph.as_default():
 
         # Evaluating the model on the test set at the end of training epochs:
         print("\nTest:")
-        test_batches = reader.swi_minibatches(x_test, y_test, z_test, batch_size=1, num_epochs=1, max_length=max_length, shuffle=False)
+        test_batches = reader.swbd_minibatches(
+            x_test, y_test, z_test, batch_size=1, num_epochs=1, max_length=max_length, shuffle=False
+            )
 
         for batch_num in test_batches:
             x_test = batch_num[0]
@@ -280,7 +283,7 @@ with graph.as_default():
 
             test_step(x_test, y_test, z_test)
 
-        print ">>>Test Loss %f, Precision %f, Recall %f, F-score %f" % \
-                (np.mean(cost_test),
-                sum(c_test) / (sum(e_test) + 1e-100), sum(c_test) / (sum(g_test) + 1e-100),
-                 (2 * sum(c_test)) / (sum(g_test) + sum(e_test) + 1e-100))
+        print ("test loss {:.3}, precision {:.3}, recall {:.3}, fscore {:.3}".format(
+              np.mean(cost_test), sum(c_test) / (sum(e_test) + (1e-100)), \
+              sum(c_test) / (sum(g_test) + (1e-100)), (2 * sum(c_test)) / (sum(g_test) + sum(e_test) + 1e-100)
+        ))
