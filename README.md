@@ -22,15 +22,30 @@ reparandum "to Boston" is the part of the utterance that is replaced, the interr
 - Tensorflow > 0.12
 - Numpy
 
+```
+$ git clone https://github.com/pariajm/deep-disfluency-detection
+$ cd deep-disfluency-detection
+```
+
 # Data
 <div align="justify">We split the Switchboard corpus into training, dev and test set as follows: training data consists of all sw[23]∗.dff files, dev training consists of all sw4[5-9]∗.dff files and test data consists of all sw4[0-1]∗.dff files. We lower-case all text and remove all partial words and punctuations from the data. The format of input and output files is one sentence per line, where each word in the input sentence has a corresponding label in the output file (labels are either "F" or "E" to denote fluent or disfluent words). Since Switchboard Corpus is not open-source, we cannot release the data split that we use to train the ACNN model. We instead provide some sample data in ./sample_data.
 
 
 # Training
+To train a new ACNN model from scratch:
 ```
-$ git clone https://github.com/pariajm/deep-disfluency-detection
-$ cd deep-disfluency-detection
-$ python3 train.py --data_path=path/to/train_and_test_files --checkpoint_dir=dir/to/save/checkpoints_and_summaries
+$ python3 train.py --data_path=/path/to/train_and_test_files --checkpoint_dir=/dir/to/save/checkpoints_and_summaries
+```
+
+# Prediction
+To use the trained ACNN model to predict disfluency labels for your own data:
+```
+$ cd model/checkpoints
+$ wget https://github.com/pariajm/deep-disfluency-detection/releases/download/v1/model-84893.data-00000-of-00001
+$ wget https://github.com/pariajm/deep-disfluency-detection/releases/download/v1/model-84893.index
+$ wget https://github.com/pariajm/deep-disfluency-detection/releases/download/v1/model-84893.meta
+$ cd ../..
+$ python3 prediction.py --input_path=/path/to/input/file --checkpoint_dir=./model --output_path=/path/to/output/file
 ```
 
 # Citation
