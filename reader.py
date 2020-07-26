@@ -138,7 +138,7 @@ def swbd_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, m
 
     data_size = len(input_ids) // max_length
     num_batches_per_epoch = data_size // batch_size
-     for epoch in range(num_epochs):
+    for epoch in range(num_epochs):
         for batch_num in range(num_batches_per_epoch):
             start_index = (batch_num * batch_size) * max_length
             end_index = (min((batch_num + 1) * batch_size, data_size)) * max_length
