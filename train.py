@@ -226,7 +226,7 @@ with graph.as_default():
             train_step(x_batch, y_batch, z_batch)
             current_step = tf.train.global_step(sess, global_step)
             if current_step % evaluate_every == 0:
-                print ("EPOCH {}: train loss {:.3}, precision {:.3}, recall {:.3}, fscore {:.3}".format(
+                print ("EPOCH {}: train loss={:.3}, precision={:.3}, recall={:.3}, fscore={:.3}".format(
                       epoch_counter, np.mean(cost), sum(c) / (sum(e) + (1e-100)), \
                       sum(c) / (sum(g) + (1e-100)), (2 * sum(c)) / (sum(g) + sum(e) + 1e-100)
                 ))
@@ -250,7 +250,7 @@ with graph.as_default():
 
                     dev_step(x_dev_batch, y_dev_batch, z_dev_batch, writer=dev_summary_writer)
 
-                print ("\nEPOCH {}: eval loss {:.3}, precision {:.3}, recall {:.3}, fscore {:.3}".format(
+                print ("\nEPOCH {}: eval loss={:.3}, precision={:.3}, recall={:.3}, fscore={:.3}".format(
                       epoch_counter, np.mean(cost_dev), sum(c_dev) / (sum(e_dev) + (1e-100)), \
                       sum(c_dev) / (sum(g_dev) + (1e-100)), (2 * sum(c_dev)) / (sum(g_dev) + sum(e_dev) + 1e-100)
                 ))
@@ -283,7 +283,7 @@ with graph.as_default():
 
             test_step(x_test, y_test, z_test)
 
-        print ("test loss {:.3}, precision {:.3}, recall {:.3}, fscore {:.3}".format(
+        print ("test loss={:.3}, precision={:.3}, recall={:.3}, fscore={:.3}".format(
               np.mean(cost_test), sum(c_test) / (sum(e_test) + (1e-100)), \
               sum(c_test) / (sum(g_test) + (1e-100)), (2 * sum(c_test)) / (sum(g_test) + sum(e_test) + 1e-100)
         ))
