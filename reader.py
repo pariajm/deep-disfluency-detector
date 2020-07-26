@@ -138,8 +138,7 @@ def swbd_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, m
 
     data_size = len(input_ids) // max_length
     num_batches_per_epoch = data_size // batch_size
-    print(data_size, batch_size)
-    for epoch in range(num_epochs):
+     for epoch in range(num_epochs):
         for batch_num in range(num_batches_per_epoch):
             start_index = (batch_num * batch_size) * max_length
             end_index = (min((batch_num + 1) * batch_size, data_size)) * max_length
@@ -147,3 +146,26 @@ def swbd_minibatches(input_ids, output_ids, mask_data, batch_size, num_epochs, m
             y = output_ids[start_index:end_index]
             z = mask_data[start_index:end_index]
             yield (x, y, z)
+            
+            
+def batch_iter(input_id, max_length, mask):
+    """
+    - Iterates on input data (usef for prediction)
+
+    Args:
+        input_id: list of input sentences mapped to integers
+        max_length: maximum length of sentences
+        mask: list of actual length of sentences
+     
+    Returns:
+        tuple (x_input, z_mask): which are minibathes of (input, mask)
+    """
+
+    x = np.array(input_id)
+    for sn in range(len(input_id)):
+        start = sn * max_length
+        end = (1 + sn) * max_length
+        x_input = x[sn : sn + 1]
+        z_mask = mask[start:end]
+        yield (x_input, z_mask)
+ 
